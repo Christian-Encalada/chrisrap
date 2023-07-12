@@ -1,0 +1,24 @@
+# Etapa de construcción
+FROM node:18 as build-stage
+
+WORKDIR /app
+
+# Copia el package.json y package-lock.json para instalar las dependencias
+COPY package*.json ./
+RUN npm install
+
+# Copia el código fuente y construye la aplicación
+COPY . .
+RUN npm run build
+
+# Etapa de producción
+FROM nginx:1.21.3-alpine
+
+# Copia los archivos de la etapa de construcción en el directorio de trabajo del servidor web
+COPY --from=build-stage /app/.next /usr/share/nginx/html
+
+# Expone el puerto 80 para acceder a la aplicación
+EXPOSE 80
+
+# Comando para iniciar el servidor web
+CMD ["nginx", "-g", "daemon off;"]

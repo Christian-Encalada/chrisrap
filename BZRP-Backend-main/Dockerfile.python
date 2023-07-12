@@ -1,0 +1,20 @@
+# Usa una imagen de Python
+FROM python:3.8
+
+# Instala PostgreSQL en el contenedor
+RUN apt-get update && apt-get install -y postgresql
+
+# Copia el código fuente de la aplicación
+COPY . /app
+
+# Establece el directorio de trabajo
+WORKDIR /app
+
+# Instala las dependencias de Python
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Expone el puerto 8000 para acceder a la aplicación
+EXPOSE 8000
+
+# Comando para iniciar la aplicación Python
+CMD ["uvicorn", "main:app"]
